@@ -94,7 +94,7 @@ object Authenticator {
 
   }
 
-  def hmac_sha(crypto: String, keyBytes: Array[Byte], text: Array[Byte]): Array[Byte] = {
+private  def hmac_sha(crypto: String, keyBytes: Array[Byte], text: Array[Byte]): Array[Byte] = {
     val hmac: Mac = Mac.getInstance(crypto)
     val macKey = new SecretKeySpec(keyBytes, "RAW")
     hmac.init(macKey)
