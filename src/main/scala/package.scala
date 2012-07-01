@@ -19,7 +19,7 @@ package org.catch22.totp
      *
      * When your user logs in you check to see if they generated the correct TOTP:
      * {{{val possibleOTPs = Authenticator.getTOTPSeq(secret=usersSecret)
-     *        if(!=possibleOTPs.contains(userEnteredOTP))  loginFailed()
+     *        if(!possibleOTPs.contains(userEnteredOTP))  loginFailed()
      *        
      *        /*Login failed.   Don't return a message indicating the exact nature of 
      *        the failure as this may expose the password to a brute force attack*/
