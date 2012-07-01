@@ -66,6 +66,7 @@ class TOTPSecret(bigInteger: java.math.BigInteger) extends BigInt(bigInteger) {
 }
 
 object TOTPSecret {
+  
   private val B32 = ('A' to 'Z') ++ ('2' to '7')
   /** Create a secret from a Base 32 String
    *  No error checking.
@@ -73,10 +74,11 @@ object TOTPSecret {
   def apply(base32: String): TOTPSecret = {
     new TOTPSecret(base32.toUpperCase.map(B32.indexOf(_)).foldLeft(0: BigInt)((a, b) => a * 32 + b).underlying)
   }
+  
+  private val HEX=('0' to '9') ++ ('a' to 'f')
   /**Create a secret from a hex String
    * No error checking.
    */
-  private val HEX = ('0' to '9') ++ ('a' to 'f')
   def fromHex(hex: String): TOTPSecret = {
     new TOTPSecret(hex.toLowerCase.map(HEX.indexOf(_)).foldLeft(0: BigInt)((a, b) => a * 16 + b).underlying)
   }
