@@ -1,4 +1,16 @@
-
+/**
+ *Copyright (c) 2011 IETF Trust and the persons identified as
+ *authors of the code. All rights reserved.
+ *
+ *Redistribution and use in source and binary forms, with or without
+ *modification, is permitted pursuant to, and subject to the license
+ *terms contained in, the Simplified BSD License set forth in Section
+ *4.c of the IETF Trust's Legal Provisions Relating to IETF Documents
+ *(http://trustee.ietf.org/license-info).
+ *
+ * @author Johan Rydell, PortWise, Inc.
+ * @author Mark Lister.
+ */
 package org.catch22.totp.auth
 
 import javax.crypto.spec.SecretKeySpec
@@ -7,7 +19,7 @@ import scala.Array.canBuildFrom
 import scala.math.pow
 
 /**
- * Authenticator derives directly from the Reference Implementation
+ * Authenticator generates one time passcodes.
  */
 object Authenticator {
 
