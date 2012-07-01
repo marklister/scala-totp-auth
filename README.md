@@ -1,7 +1,7 @@
 ###scala-totp-auth
 
-This is a scala object that implements RFC 6238 time based one time passwords.
-The HOTP protocol is identical except that timeing is not used to select OTPs.
+This is a scala library (2 files) that implement RFC 6238 time based one time passwords.
+The HOTP protocol is identical except that timing is not used to select OTPs.
 
 ###API
 
