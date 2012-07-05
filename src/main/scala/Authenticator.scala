@@ -110,10 +110,12 @@ object Authenticator {
  * is necessary.  We should deny access if a pin is provided but the user does not
  * have totp authentication setup on their account.
  */
-  def pinMatchesSecret(pin:String, secret:Option[TOTPSecret]):Boolean={
-    secret match {
-      case None => pin.trim=="" 
-      case _ => pinMatchesSecret (pin, secret.get)
+  def pinMatchesSecret(pin:Option[String], secret:Option[TOTPSecret]):Boolean={
+    (pin,secret) match {
+      case (None,None) => true 
+      case (None,Some(s:TOTPSecret)) => false
+      case (Some(p:String), None) => false
+      case (Some(p:String), Some(s:TOTPSecret))=> pinMatchesSecret(p,s)
     }  
   }
 
