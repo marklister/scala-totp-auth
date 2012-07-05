@@ -29,14 +29,14 @@ object Authenticator {
   def main(a: Array[String]): Unit = {
     println("Demo totp generation (google authenticator) see RFC 6238 http://tools.ietf.org/html/rfc6238")
     println
-    val key: TOTPSecret = new TOTPSecret
+    val secret: TOTPSecret = new TOTPSecret
     val t = System.currentTimeMillis / 30000
-    println("Base32 secret: " + key.toBase32)
-    println("Hex secret   : " + key.toString(16))
+    println("Base32 secret: " + secret.toBase32)
+    println("Hex secret   : " + secret.toString(16))
     println
     println("Time    : OTP")
     println("--------:--------")
-    getTOTPSeq(key = key, window = 5).zipWithIndex.foreach { case (e, i) => println(i + t - 5 + ": " + e) }
+    getTOTPSeq(secret = secret, window = 5).zipWithIndex.foreach { case (e, i) => println(i + t - 5 + ": " + e) }
     println
     println("Visit: http://google-authenticator.googlecode.com/git/libpam/totp.html to check results")
   }
@@ -45,7 +45,7 @@ object Authenticator {
    * This method generates a TOTP value for the given
    * set of parameters.
    *
-   * @param key: the shared secret BigInt
+   * @param secret: the shared secret BigInt
    * @param time: a value that reflects a time (in 30 sec increments for google's implementation)
    * @param returnDigits: number of digits to return
    * @param crypto: the crypto function to use
@@ -53,11 +53,11 @@ object Authenticator {
    * @return a numeric String in base 10.
    */
 
-  def generateTOTP(key: BigInt, time: Long,
+  def generateTOTP(secret: TOTPSecret, time: Long,
     returnDigits: Int, crypto: String): String = {
 
     val msg: Array[Byte] = BigInt(time).toByteArray.reverse.padTo(8, 0.toByte).reverse
-    val hash = hmac_sha(crypto, key.toByteArray, msg)
+    val hash = hmac_sha(crypto, secret.toByteArray, msg)
     val offset: Int = hash(hash.length - 1) & 0xf
     val binary: Long = ((hash(offset) & 0x7f) << 24) |
       ((hash(offset + 1) & 0xff) << 16) |
@@ -75,7 +75,7 @@ object Authenticator {
    * correct depending on client clock drift network latency and the time taken
    * for the user to enter the otp.
    *
-   * @param key: the shared secret BigInt
+   * @param secret: the shared secret TOTPSecret
    * @param time: a value that reflects a time
    *     (in 30 sec increments for google's implementation) default current
    *     timestamp (google terminology)
@@ -85,13 +85,36 @@ object Authenticator {
    *
    * @return a sequence of numeric Strings in base 10
    */
-  def getTOTPSeq(key: BigInt,
+  def getTOTPSeq(secret: TOTPSecret,
     time: Long = System.currentTimeMillis / 30000,
     returnDigits: Int = 6,
     crypto: String = "HmacSha1",
     window: Int = 3): Seq[String] = {
-    (-window to window).foldLeft(Nil: Seq[String])((a, b) => generateTOTP(key, time + b, returnDigits, crypto) +: a).reverse
+    (-window to window).foldLeft(Nil: Seq[String])((a, b) => generateTOTP(secret, time + b, returnDigits, crypto) +: a).reverse
 
+  }
+/**
+ * Convienience method to check if the pin matches the secret at the current time
+ * using the defaults used by Google authenticator
+ */
+  def pinMatchesSecret(pin:String, secret:TOTPSecret):Boolean={
+    getTOTPSeq(secret=secret).contains(pin.trim)
+  }
+
+/** 
+ * Check if the pin matches an optional secret.
+ * If there is no secret and the pin is *empty* return true
+ * Else perform regular match.
+ *
+ * Someone trying to brute force the account may incorrectly provide a pin when none
+ * is necessary.  We should deny access if a pin is provided but the user does not
+ * have totp authentication setup on their account.
+ */
+  def pinMatchesSecret(pin:String, secret:Option[TOTPSecret]):Boolean={
+    secret match {
+      case None => pin.trim=="" 
+      case _ => pinMatchesSecret (pin, secret.get)
+    }  
   }
 
 private  def hmac_sha(crypto: String, keyBytes: Array[Byte], text: Array[Byte]): Array[Byte] = {
