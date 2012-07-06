@@ -5,7 +5,7 @@ resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/s
 
 name := "scala-totp-auth"
 
-version := "1.0"
+version := "1.01"
 
 scalaVersion := "2.9.2"
 
