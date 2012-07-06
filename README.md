@@ -41,4 +41,4 @@ Type `sbt run`
 
 ###How to use it in my project?
 
-for now there's only an [unmanaged jar](./tree/master/target/scala-2.9.2/scala-totp-auth_2.9.2-1.01.jar) or build it from source.
+for now there's only an [unmanaged jar](https://github.com/milo-minderbender/scala-totp-auth/raw/gh-pages/target/scala-2.9.2/scala-totp-auth_2.9.2-1.01.jar) or build it from source.
