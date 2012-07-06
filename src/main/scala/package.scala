@@ -14,23 +14,14 @@ package org.catch22.totp
      * val secret = new TOTPSecret
      * }}}
      *
-     * Pass the secret to your user.  You might want to generate a QR code.
-     * Your user loads the secret into their device (Android/ IOS/ J2ME ...).
+     * Pass the secret to your user and store in your database.  You might want to generate a QR code.
+     * Your user loads the secret into their portable device.
      *
      * When your user logs in you check to see if they generated the correct TOTP:
-     * {{{val possibleOTPs = Authenticator.getTOTPSeq(secret=usersSecret)
-     *        if(!possibleOTPs.contains(userEnteredOTP))  loginFailed()
-     *        
-     *        /*Login failed.   Don't return a message indicating the exact nature of 
-     *        the failure as this may expose the password to a brute force attack*/
+     * {{{val success= Authenticator.pinMatchesSecret(pin,usersSecret)
      * }}}
-     *
-     * ==Time Drift==
-     *
-     * Check your user's clock and warn them if they are 'on the limit':
-     * {{{ val drift = possibleOTPs.indexOf(userEnteredOTP) - window //window is 3 by default
-     *     // a value of zero is ideal.  A value approaching -window or +window indicates excessive
-     *     // drift and you should inform the user.}}}
+     * If the {{{usersSecet}}} is {{{None}}} and the pin is {{{None}}} returns true. Otherwise the pin
+     * is checked against the 7 possible pins in the current window using Google Authenticator defaults. 
      *
      *
      * ==Conversions==
@@ -40,7 +31,11 @@ package org.catch22.totp
      *     val secret:TOTPSecret = TOTPSecret.fromHex(hexString) Hex    -> Integer
      *     val b:Array[Byte] = secret.toByteArray                Integer-> Array[Byte]}}}
      *
+     *==Generating a totp to test==
+     * you can use `oathtool` (available at least in current Debian repos)
      *
+     * {{{oathtool --totp secret_in_HEX}}}
+     * 77777777 base32 == ffffffffff Hex 
      */  
 
 package object auth {
