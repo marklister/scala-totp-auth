@@ -56,4 +56,16 @@ for (t<-times){
 }
 
 
+"pin of None" should {
+      "produce true for a match if the secret is None" in {
+         Authenticator.pinMatchesSecret (None,None) must beTrue
+      }
+    }
+
+"Pin with something in it" should {
+      "produce false for a match if the secret is None" in {
+         Authenticator.pinMatchesSecret (Some("123456"),None) must beFalse
+      }
+    }
+
   }

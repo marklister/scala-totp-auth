@@ -1,1 +1,0 @@
-Index.PACKAGES = {"org" : [], "org.catch22" : [], "org.catch22.totp" : [], "org.catch22.totp.auth" : [{"object" : "org\/catch22\/totp\/auth\/Authenticator$.html", "name" : "org.catch22.totp.auth.Authenticator"}, {"object" : "org\/catch22\/totp\/auth\/TOTPSecret$.html", "class" : "org\/catch22\/totp\/auth\/TOTPSecret.html", "name" : "org.catch22.totp.auth.TOTPSecret"}]};
