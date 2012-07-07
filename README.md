@@ -5,7 +5,7 @@ The HOTP protocol is identical except that timeing is not used to select OTPs.
 
 ###API
 
-Take a look at the [scaladoc](./tree/master/target/scala-2.9.2/api/org/catch22/totp/auth/package.html) 
+Take a look at the [scaladoc](./tree/gh-pages/target/scala-2.9.2/api/org/catch22/totp/auth/package.html) 
 
 ###Running
 
