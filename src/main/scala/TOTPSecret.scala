@@ -75,11 +75,10 @@ object TOTPSecret {
     new TOTPSecret(base32.toUpperCase.map(B32.indexOf(_)).foldLeft(0: BigInt)((a, b) => a * 32 + b).underlying)
   }
   
-  private val HEX=('0' to '9') ++ ('a' to 'f')
   /**Create a secret from a hex String
    * No error checking.
    */
   def fromHex(hex: String): TOTPSecret = {
-    new TOTPSecret(hex.toLowerCase.map(HEX.indexOf(_)).foldLeft(0: BigInt)((a, b) => a * 16 + b).underlying)
+    new TOTPSecret(BigInt(hex,16))
   }
 }
