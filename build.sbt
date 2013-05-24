@@ -15,3 +15,11 @@ scalaVersion := "2.10.1"
 
 scalacOptions in (Compile, doc) ++=
   Opts.doc.sourceUrl("https://github.com/marklister/scala-totp-auth/blob/master/src/main/scala/€{TPL_NAME}.scala")
+
+site.settings
+
+ghpages.settings
+
+git.remoteRepo := "git@github.com:marklister/scala-totp-auth.git"
+
+site.includeScaladoc()
