@@ -14,4 +14,4 @@ version := "1.02"
 scalaVersion := "2.10.1"
 
 scalacOptions in (Compile, doc) ++=
-  Opts.doc.sourceUrl("https://github.com/milo-minderbender/scala-totp-auth/blob/master/src/main/scala/€{TPL_NAME}.scala")
+  Opts.doc.sourceUrl("https://github.com/marklister/scala-totp-auth/blob/master/src/main/scala/€{TPL_NAME}.scala")
