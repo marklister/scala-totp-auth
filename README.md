@@ -43,6 +43,6 @@ Type `sbt run`
 
 There's an 
   - [unmanaged jar 2.9](https://marklister.github.com/scala-totp-auth/scala-totp-auth_2.9.2-1.01.jar) 
-  - [unmanaged jar for 2.10](https://marklister.github.com/scala-totp-auth/scala-totp-auth_2.10.1-1.02.jar)
+  - [unmanaged jar for 2.10](https://marklister.github.com/scala-totp-auth/scala-totp-auth_2.10-1.02.jar)
 
 Or build it from source.
