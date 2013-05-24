@@ -1,3 +1,5 @@
+import SiteKeys._
+
   libraryDependencies ++= Seq(
     "org.specs2" %% "specs2" % "1.14" % "test"        
     // with Scala 2.9.2 (specs2 1.12.3 is the latest version for scala 2.9.2)
@@ -23,3 +25,5 @@ ghpages.settings
 git.remoteRepo := "git@github.com:marklister/scala-totp-auth.git"
 
 site.includeScaladoc()
+
+includeFilter in makeSite  ~= { f => f ||    "*.jar" }

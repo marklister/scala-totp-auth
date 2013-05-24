@@ -5,7 +5,7 @@ The HOTP protocol is identical except that timing is not used to select OTPs.
 
 ###API
 
-Take a look at the [scaladoc](http://marklister.github.com/scala-totp-auth/latest/api/package.html) 
+Take a look at the [scaladoc](http://marklister.github.com/scala-totp-auth/latest/api/index.html#org.catch22.totp.auth.package) 
 
 ###Running
 
