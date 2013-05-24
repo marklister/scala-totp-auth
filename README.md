@@ -1,11 +1,11 @@
 ###scala-totp-auth
 
 This is a scala object that implements RFC 6238 time based one time passwords.
-The HOTP protocol is identical except that timeing is not used to select OTPs.
+The HOTP protocol is identical except that timing is not used to select OTPs.
 
 ###API
 
-Take a look at the [scaladoc](http://marklister.github.com/scala-totp-auth/target/scala-2.9.2/api/org/catch22/totp/auth/package.html) 
+Take a look at the [scaladoc](http://marklister.github.com/scala-totp-auth/target/scala-2.10.1/api/org/catch22/totp/auth/package.html) 
 
 ###Running
 
@@ -41,4 +41,4 @@ Type `sbt run`
 
 ###How to use it in my project?
 
-for now there's only an [unmanaged jar](https://github.com/milo-minderbender/scala-totp-auth/raw/gh-pages/target/scala-2.9.2/scala-totp-auth_2.9.2-1.01.jar) or build it from source.
+There's an [unmanaged jar 2.9.1](https://github.com/marklister/scala-totp-auth/raw/gh-pages/target/scala-2.9.2/scala-totp-auth_2.9.2-1.01.jar) [unmanaged jar 2.10.1](https://github.com/marklister/scala-totp-auth/raw/gh-pages/target/scala-2.10.1/scala-totp-auth_2.10.1-1.02.jar)or build it from source.
