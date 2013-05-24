@@ -25,21 +25,21 @@ import scala.util.Random
  *  Base32 is the defacto format used by Google authenticator.  The OAuthTool uses hex :(
  */
 
-class TOTPSecret(bigInteger: java.math.BigInteger) extends BigInt(bigInteger) {
+class TOTPSecret(val underlying: BigInt) {
 
   /**
    * Create a new TOTP secret key of b32Digits * 5 bits in length using a custom random source 
    */
   def this(b32Digits: Int, r: Random) =
-    this((2 to b32Digits).foldLeft(BigInt(r.nextInt(31)) + 1: BigInt)((a, b) => a * 32 + r.nextInt(32)).underlying)
+    this((2 to b32Digits).foldLeft(BigInt(r.nextInt(31)) + 1: BigInt)((a, b) => a * 32 + r.nextInt(32)))
 
   /**
    * Create a new TOTP secret key from an Array[Byte] 
    */
   def this(bytes: Array[Byte]) =
-    this(new java.math.BigInteger(bytes))
+    this(BigInt(bytes))
 
-    /**
+  /**
    * Create a new TOTP secret key of b32Digits * 5 bits in length using the default random source
    */
   def this(b32Digits: Int) = this(b32Digits, new Random(new SecureRandom))
@@ -47,38 +47,39 @@ class TOTPSecret(bigInteger: java.math.BigInteger) extends BigInt(bigInteger) {
   /**
    * Create a new TOTP secret key 80 bits (16 Base 32 char) long using the default random source
    */
-  def this() = this(16)
+   def this() = this(16)
 
-  private val B32 = ('A' to 'Z') ++ ('2' to '7')
+   private val B32 = ('A' to 'Z') ++ ('2' to '7')
   
-  /**Convert this secret into its Base 32 string representation.
-   */
-  def toBase32: String = new String(this.toString(32).toCharArray.map(_.asDigit).map(B32(_)))
+   /**Convert this secret into its Base 32 string representation.
+    */
+   def toBase32: String = new String(underlying.toString(32).toCharArray.map(_.asDigit).map(B32(_)))
 
-  /** A replacement of java.math.BigInteger.toByteArray as the parent method adds a zero
-   *  byte to the head of the byte array from time to time.
-   */
-  override def toByteArray: Array[Byte] = {
-    //Sometimes we have an extra zero byte to start :(
-    val b = this.underlying.toByteArray
-    if (b(0) == 0) b.tail else b
-  }
-}
+   /** A replacement of java.math.BigInteger.toByteArray as the parent method adds a zero
+    *  byte to the head of the byte array from time to time.
+    */
+   def toByteArray: Array[Byte] = {
+      //Sometimes we have an extra zero byte to start :(
+      val b = underlying.toByteArray
+      if (b(0) == 0) b.tail else b
+    }
+   def toString(n:Int)=underlying.toString(n)
+   }
 
-object TOTPSecret {
+   object TOTPSecret {
   
-  private val B32 = ('A' to 'Z') ++ ('2' to '7')
-  /** Create a secret from a Base 32 String
-   *  No error checking.
-   */
-  def apply(base32: String): TOTPSecret = {
-    new TOTPSecret(base32.toUpperCase.map(B32.indexOf(_)).foldLeft(0: BigInt)((a, b) => a * 32 + b).underlying)
-  }
+      private val B32 = ('A' to 'Z') ++ ('2' to '7')
+      /** Create a secret from a Base 32 String
+       *  No error checking.
+       */
+      def apply(base32: String): TOTPSecret = {
+        new TOTPSecret(base32.toUpperCase.map(B32.indexOf(_)).foldLeft(0: BigInt)((a, b) => a * 32 + b))
+      }
   
-  /**Create a secret from a hex String
-   * No error checking.
-   */
-  def fromHex(hex: String): TOTPSecret = {
-    new TOTPSecret(BigInt(hex,16))
-  }
-}
+      /**Create a secret from a hex String
+       * No error checking.
+       */
+      def fromHex(hex: String): TOTPSecret = {
+        new TOTPSecret(BigInt(hex,16))
+      }
+    }

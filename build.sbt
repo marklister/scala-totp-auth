@@ -1,15 +1,17 @@
-libraryDependencies ++= Seq("org.specs2" %% "specs2" % "1.11" % "test")
+  libraryDependencies ++= Seq(
+    "org.specs2" %% "specs2" % "1.14" % "test"        
+    // with Scala 2.9.2 (specs2 1.12.3 is the latest version for scala 2.9.2)
+    // "org.specs2" %% "specs2" % "1.12.3" % "test",
+  )
 
 resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                     "releases"  at "http://oss.sonatype.org/content/repositories/releases")
 
 name := "scala-totp-auth"
 
-version := "1.01"
+version := "1.02"
 
-scalaVersion := "2.9.2"
-
-//sbtVersion := "0.11.2"
+scalaVersion := "2.10.1"
 
 scalacOptions in (Compile, doc) ++=
   Opts.doc.sourceUrl("https://github.com/milo-minderbender/scala-totp-auth/blob/master/src/main/scala/€{TPL_NAME}.scala")
