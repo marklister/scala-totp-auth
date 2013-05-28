@@ -41,6 +41,10 @@ object Authenticator {
     println("Visit: http://google-authenticator.googlecode.com/git/libpam/totp.html to check results")
   }
 
+  @deprecated("Use method totp instead", "1.03")
+  def generateTOTP(secret: TOTPSecret, time: Long,
+    returnDigits: Int, crypto: String): String = totp(secret,time,returnDigits,crypto)
+
   /**
    * This method generates a TOTP value for the given
    * set of parameters.
@@ -53,7 +57,7 @@ object Authenticator {
    * @return a numeric String in base 10.
    */
 
-  def generateTOTP(secret: TOTPSecret, time: Long,
+  def totp(secret: TOTPSecret, time: Long,
     returnDigits: Int, crypto: String): String = {
 
     val msg: Array[Byte] = BigInt(time).toByteArray.reverse.padTo(8, 0.toByte).reverse
@@ -68,12 +72,17 @@ object Authenticator {
 
     ("0" * returnDigits + otp.toString).takeRight(returnDigits)
   }
+  
+  @deprecated("Use method totpSeq instead", "1.02")
+  def getTOTPSeq(secret: TOTPSecret,
+    time: Long = System.currentTimeMillis / 30000,
+    returnDigits: Int = 6,
+    crypto: String = "HmacSha1",
+    window: Int = 3): Seq[String] = totpSeq(secret,time,returnDigits,crypto,window)
 
   /**
-   * Generate a sequence of TP values. The idea is that there is no single
-   * correct OTP value -- rather a group of OTPs that should be regarded as
-   * correct depending on client clock drift network latency and the time taken
-   * for the user to enter the otp.
+   * Generate a window of TOTP values. The window allows for client clock drift,
+   *  network latency, and the time taken for the user to enter the otp.
    *
    * @param secret: the shared secret TOTPSecret
    * @param time: a value that reflects a time
@@ -81,34 +90,47 @@ object Authenticator {
    *     timestamp (google terminology)
    * @param returnDigits: number of digits to return
    * @param crypto: the crypto function to use
-   * @param window: the window size to use.
+   * @param windowSize: the window size to use.
    *
    * @return a sequence of numeric Strings in base 10
    */
-  def getTOTPSeq(secret: TOTPSecret,
+  def totpSeq(secret: TOTPSecret,
     time: Long = System.currentTimeMillis / 30000,
     returnDigits: Int = 6,
     crypto: String = "HmacSha1",
-    window: Int = 3): Seq[String] = {
-    (-window to window).foldLeft(Nil: Seq[String])((a, b) => generateTOTP(secret, time + b, returnDigits, crypto) +: a).reverse
+    windowSize: Int = 3): Seq[String] = {
+    (-windowSize to windowSize).foldLeft(Nil: Seq[String])((a, b) => totp(secret, time + b, returnDigits, crypto) +: a).reverse
 
   }
 /**
- * Convienience method to check if the pin matches the secret at the current time
+ * Convenience method to check if the pin matches the secret at the current time
  * using the defaults used by Google authenticator
+ * 
+ * @return true if the secret generates the pin within the default window.
+ *          false otherwise.
  */
   def pinMatchesSecret(pin:String, secret:TOTPSecret):Boolean={
-    getTOTPSeq(secret=secret).contains(pin.trim)
+    totpSeq(secret=secret).contains(pin.trim)
   }
 
 /** 
  * Check if the pin matches an optional secret.
- * If there is no secret and the pin is *empty* return true
- * Else perform regular match.
+ * If there is no secret and also no pin then return true
+ * Else perform a regular match.
  *
  * Someone trying to brute force the account may incorrectly provide a pin when none
  * is necessary.  We should deny access if a pin is provided but the user does not
  * have totp authentication setup on their account.
+ * 
+ * Make sure to return the same message that the user would get if the password
+ * was incorrect.  Test the password even if this function returns false
+ * to negate a timing attack.
+ * 
+ * @return true if the pin and secret are both None
+ *          false if the pin is None and the secret is Some(...)
+ *          false if the pin is Some(...) and the secret is None
+ *          true if the pin is Some(...) and the secret generates the pin
+ *          within the default window
  */
   def pinMatchesSecret(pin:Option[String], secret:Option[TOTPSecret]):Boolean={
     (pin,secret) match {
