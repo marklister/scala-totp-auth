@@ -227,23 +227,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="org.catch22.totp.auth.Authenticator#generateTOTP" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="generateTOTP(secret:org.catch22.totp.auth.TOTPSecret,time:Long,returnDigits:Int,crypto:String):String"></a>
-      <a id="generateTOTP(TOTPSecret,Long,Int,String):String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">generateTOTP</span><span class="params">(<span name="secret">secret: <a href="TOTPSecret.html" class="extype" name="org.catch22.totp.auth.TOTPSecret">TOTPSecret</a></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span></span>, <span name="returnDigits">returnDigits: <span class="extype" name="scala.Int">Int</span></span>, <span name="crypto">crypto: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">This method generates a TOTP value for the given
-set of parameters.</p><div class="fullcomment"><div class="comment cmt"><p>This method generates a TOTP value for the given
-set of parameters.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a numeric String in base 10.
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -257,24 +240,6 @@ set of parameters.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.catch22.totp.auth.Authenticator#getTOTPSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getTOTPSeq(secret:org.catch22.totp.auth.TOTPSecret,time:Long,returnDigits:Int,crypto:String,window:Int):Seq[String]"></a>
-      <a id="getTOTPSeq(TOTPSecret,Long,Int,String,Int):Seq[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getTOTPSeq</span><span class="params">(<span name="secret">secret: <a href="TOTPSecret.html" class="extype" name="org.catch22.totp.auth.TOTPSecret">TOTPSecret</a></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">System.currentTimeMillis / 30000</span></span>, <span name="returnDigits">returnDigits: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6</span></span>, <span name="crypto">crypto: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;HmacSha1&quot;</span></span>, <span name="window">window: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">3</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Generate a sequence of TP values.</p><div class="fullcomment"><div class="comment cmt"><p>Generate a sequence of TP values. The idea is that there is no single
-correct OTP value -- rather a group of OTPs that should be regarded as
-correct depending on client clock drift network latency and the time taken
-for the user to enter the otp.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a sequence of numeric Strings in base 10
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -367,12 +332,19 @@ for the user to enter the otp.
       </span>
       </h4>
       <p class="shortcomment cmt">Check if the pin matches an optional secret.</p><div class="fullcomment"><div class="comment cmt"><p>Check if the pin matches an optional secret.
-If there is no secret and the pin is *empty* return true
-Else perform regular match.</p><p>Someone trying to brute force the account may incorrectly provide a pin when none
+If there is no secret and also no pin then return true
+Else perform a regular match.</p><p>Someone trying to brute force the account may incorrectly provide a pin when none
 is necessary.  We should deny access if a pin is provided but the user does not
-have totp authentication setup on their account.
-</p></div></div>
-    </li><li name="org.catch22.totp.auth.Authenticator#pinMatchesSecret" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+have totp authentication setup on their account.</p><p>Make sure to return the same message that the user would get if the password
+was incorrect.  Test the password even if this function returns false
+to negate a timing attack.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the pin and secret are both None
+         false if the pin is None and the secret is Some(...)
+         false if the pin is Some(...) and the secret is None
+         true if the pin is Some(...) and the secret generates the pin
+         within the default window
+</p></dd></dl></div>
+    </li><li name="org.catch22.totp.auth.Authenticator#pinMatchesSecret" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="pinMatchesSecret(pin:String,secret:org.catch22.totp.auth.TOTPSecret):Boolean"></a>
       <a id="pinMatchesSecret(String,TOTPSecret):Boolean"></a>
       <h4 class="signature">
@@ -384,9 +356,13 @@ have totp authentication setup on their account.
         <span class="name">pinMatchesSecret</span><span class="params">(<span name="pin">pin: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="secret">secret: <a href="TOTPSecret.html" class="extype" name="org.catch22.totp.auth.TOTPSecret">TOTPSecret</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Convienience method to check if the pin matches the secret at the current time
+      <p class="shortcomment cmt">Convenience method to check if the pin matches the secret at the current time
 using the defaults used by Google authenticator
-</p>
+</p><div class="fullcomment"><div class="comment cmt"><p>Convenience method to check if the pin matches the secret at the current time
+using the defaults used by Google authenticator
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the secret generates the pin within the default window.
+         false otherwise.
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -413,6 +389,39 @@ using the defaults used by Google authenticator
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.catch22.totp.auth.Authenticator#totp" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="totp(secret:org.catch22.totp.auth.TOTPSecret,time:Long,returnDigits:Int,crypto:String):String"></a>
+      <a id="totp(TOTPSecret,Long,Int,String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">totp</span><span class="params">(<span name="secret">secret: <a href="TOTPSecret.html" class="extype" name="org.catch22.totp.auth.TOTPSecret">TOTPSecret</a></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span></span>, <span name="returnDigits">returnDigits: <span class="extype" name="scala.Int">Int</span></span>, <span name="crypto">crypto: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">This method generates a TOTP value for the given
+set of parameters.</p><div class="fullcomment"><div class="comment cmt"><p>This method generates a TOTP value for the given
+set of parameters.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a numeric String in base 10.
+</p></dd></dl></div>
+    </li><li name="org.catch22.totp.auth.Authenticator#totpSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="totpSeq(secret:org.catch22.totp.auth.TOTPSecret,time:Long,returnDigits:Int,crypto:String,windowSize:Int):Seq[String]"></a>
+      <a id="totpSeq(TOTPSecret,Long,Int,String,Int):Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">totpSeq</span><span class="params">(<span name="secret">secret: <a href="TOTPSecret.html" class="extype" name="org.catch22.totp.auth.TOTPSecret">TOTPSecret</a></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">System.currentTimeMillis / 30000</span></span>, <span name="returnDigits">returnDigits: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6</span></span>, <span name="crypto">crypto: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;HmacSha1&quot;</span></span>, <span name="windowSize">windowSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">3</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Generate a window of TOTP values.</p><div class="fullcomment"><div class="comment cmt"><p>Generate a window of TOTP values. The window allows for client clock drift,
+ network latency, and the time taken for the user to enter the otp.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a sequence of numeric Strings in base 10
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -466,7 +475,42 @@ using the defaults used by Google authenticator
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="org.catch22.totp.auth.Authenticator#generateTOTP" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="generateTOTP(secret:org.catch22.totp.auth.TOTPSecret,time:Long,returnDigits:Int,crypto:String):String"></a>
+      <a id="generateTOTP(TOTPSecret,Long,Int,String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 1.03) Use method totp instead">generateTOTP</span><span class="params">(<span name="secret">secret: <a href="TOTPSecret.html" class="extype" name="org.catch22.totp.auth.TOTPSecret">TOTPSecret</a></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span></span>, <span name="returnDigits">returnDigits: <span class="extype" name="scala.Int">Int</span></span>, <span name="crypto">crypto: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 1.03)</i> Use method totp instead</p></dd></dl></div>
+    </li><li name="org.catch22.totp.auth.Authenticator#getTOTPSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getTOTPSeq(secret:org.catch22.totp.auth.TOTPSecret,time:Long,returnDigits:Int,crypto:String,window:Int):Seq[String]"></a>
+      <a id="getTOTPSeq(TOTPSecret,Long,Int,String,Int):Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 1.02) Use method totpSeq instead">getTOTPSeq</span><span class="params">(<span name="secret">secret: <a href="TOTPSecret.html" class="extype" name="org.catch22.totp.auth.TOTPSecret">TOTPSecret</a></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">System.currentTimeMillis / 30000</span></span>, <span name="returnDigits">returnDigits: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6</span></span>, <span name="crypto">crypto: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;HmacSha1&quot;</span></span>, <span name="window">window: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">3</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 1.02)</i> Use method totpSeq instead</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
