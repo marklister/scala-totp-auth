@@ -3,6 +3,16 @@
 This is a scala object that implements RFC 6238 time based one time passwords.
 The HOTP protocol is identical except that timing is not used to select OTPs.
 
+###Sample login code
+
+```scala
+//Retrieve the user's secret from the db
+//retrieve the pin that the user entered from their device
+
+val ok =Authenticator.pinMatchesSecret(userPin,TOTPSecret(base32Secret))
+...
+```
+
 ###API
 
 Take a look at the [scaladoc](http://marklister.github.com/scala-totp-auth/latest/api/index.html#org.catch22.totp.auth.package) 
