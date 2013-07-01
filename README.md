@@ -1,5 +1,7 @@
 ###scala-totp-auth
 
+[![Build Status](https://travis-ci.org/marklister/scala-totp-auth.png)](https://travis-ci.org/marklister/scala-totp-auth)
+
 This is a scala object that implements RFC 6238 time based one time passwords.
 The HOTP protocol is identical except that timing is not used to select OTPs.
 
