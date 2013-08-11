@@ -6,12 +6,11 @@ package org.catch22.totp
      * the RI (rev 6).
      *
      * It was created to solve a problem converting Base32 and Hex using the existing libraries.
-     * I think BigInt simplifies things considerably.
      *
      * ==Basic use==
      * Create a new secret:
      * {{{
-     * val secret = new TOTPSecret
+     * val secret = TOTPSecret()
      * }}}
      *
      * Pass the secret to your user.  You might want to generate a QR code.
@@ -24,6 +23,11 @@ package org.catch22.totp
      *        /*Login failed.   Don't return a message indicating the exact nature of 
      *        the failure as this may expose the password to a brute force attack*/
      * }}}
+     * 
+     * ==Note== 
+     * 
+     * Secrets generated are guaranteed to be n digits long.  Some keyspace is
+     * sacrificed. See the project issue tracker for a discussion. 
      *
      * ==Time Drift==
      *
