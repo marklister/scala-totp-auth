@@ -41,10 +41,6 @@ object Authenticator {
     println("Visit: http://google-authenticator.googlecode.com/git/libpam/totp.html to check results")
   }
 
-  @deprecated("Use method totp instead", "1.03")
-  def generateTOTP(secret: TOTPSecret, time: Long,
-    returnDigits: Int, crypto: String): String = totp(secret,time,returnDigits,crypto)
-
   /**
    * This method generates a TOTP value for the given
    * set of parameters.
@@ -73,13 +69,6 @@ object Authenticator {
     ("0" * returnDigits + otp.toString).takeRight(returnDigits)
   }
   
-  @deprecated("Use method totpSeq instead", "1.02")
-  def getTOTPSeq(secret: TOTPSecret,
-    time: Long = System.currentTimeMillis / 30000,
-    returnDigits: Int = 6,
-    crypto: String = "HmacSha1",
-    window: Int = 3): Seq[String] = totpSeq(secret,time,returnDigits,crypto,window)
-
   /**
    * Generate a window of TOTP values. The window allows for client clock drift,
    *  network latency, and the time taken for the user to enter the otp.
