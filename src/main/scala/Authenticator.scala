@@ -29,7 +29,7 @@ object Authenticator {
   def main(a: Array[String]): Unit = {
     println("Demo totp generation (google authenticator) see RFC 6238 http://tools.ietf.org/html/rfc6238")
     println
-    val secret: TOTPSecret = new TOTPSecret
+    val secret: TOTPSecret = TOTPSecret()
     val t = System.currentTimeMillis / 30000
     println("Base32 secret: " + secret.toBase32)
     println("Hex secret   : " + secret.toString(16))

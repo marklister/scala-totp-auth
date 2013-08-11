@@ -4,6 +4,7 @@
 
 This is a scala object that implements RFC 6238 time based one time passwords.
 The HOTP protocol is identical except that timing is not used to select OTPs.
+*scala-totp-auth* exists to make it easy to integrate totp into one of my Play 2.0 applications.  Target portable device runs Google Authenticator.
 
 ###Sample login code
 
@@ -24,6 +25,14 @@ Take a look at the [scaladoc](http://marklister.github.com/scala-totp-auth/lates
 Check out the project 
 
 Type `sbt run` 
+
+###Reference Implementation
+
+The Refererence Implementation is in the test sources.  *scala-totp-auth*'s behaviour should exactly match the RI.  There are a few tests that check this.
+
+If you find any differences please file an issue.
+
+If you think some behaviour should be different from the RI be prepared to motivate your proposal very well.
 
 ###Test
 
@@ -55,6 +64,6 @@ Type `sbt run`
 
 There's an 
   - [unmanaged jar 2.9](https://marklister.github.com/scala-totp-auth/scala-totp-auth_2.9.2-1.01.jar) 
-  - [unmanaged jar for 2.10](https://marklister.github.com/scala-totp-auth/scala-totp-auth_2.10-1.02.jar)
+  - [unmanaged jar for 2.10](https://marklister.github.com/scala-totp-auth/scala-totp-auth_2.10-1.1.jar)
 
-Or build it from source.
+Or build it from source.  There are only 2 classes and a companion object.

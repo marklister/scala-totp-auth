@@ -3,7 +3,7 @@ import org.specs2.mutable.Specification
 
   class TOTSecretSpec extends Specification {
 
-  val sec= new TOTPSecret
+  val sec= TOTPSecret()
     "Base32 String "+sec.toBase32 should {
       "contain 16 characters" in {
         sec.toBase32 must have size(16)
@@ -16,7 +16,7 @@ import org.specs2.mutable.Specification
       }      
     }
     val ba=sec.toByteArray
-    val sec2=new TOTPSecret(ba)
+    val sec2=TOTPSecret(ba)
 
     "Secret created from Array[Byte] should equal" should {
       "one created by other means" in {

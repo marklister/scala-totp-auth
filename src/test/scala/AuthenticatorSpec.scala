@@ -45,7 +45,7 @@ for (t<-times){
 
 for (t<-times){
   for (m<-modes){
-    val k=new TOTPSecret
+    val k=TOTPSecret()
     "Time "+t +" mode:"+m + " key(hex):"+k.toString(16)+" B32:"+k.toBase32 should {
       "produce the same result for both implementations (random key)" in {
         TOTP.generateTOTP(k.toString(16),("0" * 16 +(t/30).toHexString).takeRight(16),"8",m) must beEqualTo(
