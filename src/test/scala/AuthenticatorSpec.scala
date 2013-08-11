@@ -19,7 +19,7 @@ def pad(s:String,n:Int):String={
   val sec= TOTPSecret.fromHex("3132333435363738393031323334353637383930")
     "Hex String '3132333435363738393031323334353637383930' ("+sec.toBase32+")" should {
       "produce the same otp as line 1 of table 1 in the Ref. Implementation" in {
-        Authenticator.generateTOTP(sec,1,8,"HmacSHA1") must beEqualTo("94287082")
+        Authenticator.totp(sec,1,8,"HmacSHA1") must beEqualTo("94287082")
       }       
     }
 
@@ -37,7 +37,7 @@ for (t<-times){
     "Time "+t +" mode:"+m should {
       "produce the same result for both implementations" in {
         TOTP.generateTOTP(sec.toString(16),("0" * 16 +(t/30).toHexString).takeRight(16),"8",m) must beEqualTo(
-         Authenticator.generateTOTP(sec,t/30,8,m) )
+         Authenticator.totp(sec,t/30,8,m) )
       }
     }
   }
@@ -49,7 +49,7 @@ for (t<-times){
     "Time "+t +" mode:"+m + " key(hex):"+k.toString(16)+" B32:"+k.toBase32 should {
       "produce the same result for both implementations (random key)" in {
         TOTP.generateTOTP(k.toString(16),("0" * 16 +(t/30).toHexString).takeRight(16),"8",m) must beEqualTo(
-         Authenticator.generateTOTP(k,t/30,8,m) )
+         Authenticator.totp(k,t/30,8,m) )
       }
     }
   }

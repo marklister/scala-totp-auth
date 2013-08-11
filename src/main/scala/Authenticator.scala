@@ -36,7 +36,7 @@ object Authenticator {
     println
     println("Time    : OTP")
     println("--------:--------")
-    getTOTPSeq(secret = secret, window = 5).zipWithIndex.foreach { case (e, i) => println(i + t - 5 + ": " + e) }
+    totpSeq(secret = secret).zipWithIndex.foreach { case (e, i) => println(i + t - 5 + ": " + e) }
     println
     println("Visit: http://google-authenticator.googlecode.com/git/libpam/totp.html to check results")
   }
